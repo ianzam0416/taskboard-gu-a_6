@@ -37,3 +37,12 @@ Route::post('/transacciones', [
     TransaccionController::class,
     'store'
 ])->name('transacciones.store');
+Route::get('/transacciones', [
+    TransaccionController::class,
+    'index'
+])->name('transacciones.index');
+
+Route::get('/transaccion/{transaccion}', [
+    TransaccionController::class,
+    'show'
+])->name('transacciones.show');
