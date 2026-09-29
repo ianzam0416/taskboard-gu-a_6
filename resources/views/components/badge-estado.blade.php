@@ -1,5 +1,3 @@
-{{-- Semana 7 · Blade — Componente reutilizable --}}
-{{-- Uso: <x-badge-estado :estado="$transaccion->estado" /> --}}
 @props(['estado'])
 
 @if ($estado === 'Completada')
