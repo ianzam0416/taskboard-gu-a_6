@@ -1,4 +1,4 @@
-{{-- Semana 7 · Blade --}}
+{{-- Semana 9 · Blade --}}
 {{-- resources/views/comercios/index.blade.php --}}
 
 @extends('layouts.app')
@@ -9,12 +9,28 @@
     <h1>Comercios afiliados a la pasarela</h1>
 
     <form action="{{ route('comercios.index') }}" method="GET">
+
         <input
             type="text"
             name="buscar"
             placeholder="Buscar comercio..."
             value="{{ request('buscar') }}"
         >
+
+        <select name="rubro">
+            <option value="">Todos los rubros</option>
+
+            <option value="Restaurante"
+                {{ request('rubro') === 'Restaurante' ? 'selected' : '' }}>
+                Restaurante
+            </option>
+
+            <option value="Ferretería"
+                {{ request('rubro') === 'Ferretería' ? 'selected' : '' }}>
+                Ferretería
+            </option>
+        </select>
+
         <button type="submit">Buscar</button>
     </form>
 

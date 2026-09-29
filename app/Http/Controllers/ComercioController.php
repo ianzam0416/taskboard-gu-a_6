@@ -18,6 +18,10 @@ class ComercioController extends Controller
                 "%{$request->buscar}%"
             )
         )
+            ->when(
+                $request->rubro,
+                fn ($q) => $q->where('rubro', $request->rubro)
+            )
             ->withCount('transacciones')
             ->withSum('transacciones', 'monto')
             ->orderByDesc('transacciones_count')

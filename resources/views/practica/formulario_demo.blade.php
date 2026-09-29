@@ -9,6 +9,7 @@
 
     <form action="/practica/enviar" method="POST">
         @csrf
+
         <label for="cliente">Cliente</label>
         <input id="cliente" name="cliente_nombre" type="text">
         <br>
@@ -16,9 +17,10 @@
         <label for="monto">Monto</label>
         <input id="monto" name="monto" type="number" step="0.01">
         <br>
+
         <label for="correo">Correo de contacto</label>
-<input id="correo" name="correo" type="email">
-<br>
+        <input id="correo" name="correo" type="email">
+        <br>
 
         <label for="estado">Estado</label>
         <select id="estado" name="estado">
@@ -26,9 +28,10 @@
             <option value="Completada">Completada</option>
         </select>
         <br>
+
         <label for="recurrente">¿Es una transacción recurrente?</label>
-<input id="recurrente" name="recurrente" type="checkbox">
-<br>
+        <input id="recurrente" name="recurrente" type="checkbox">
+        <br>
 
         <button type="submit">Enviar (modo prueba)</button>
     </form>

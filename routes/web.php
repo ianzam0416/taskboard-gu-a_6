@@ -23,20 +23,25 @@ Route::get('/comercios', [ComercioController::class, 'index'])
 
 Route::get('/comercios/{comercio}', [ComercioController::class, 'show'])
     ->name('comercios.show');
-    Route::get('/practica/formulario-demo', function () {
+
+Route::get('/practica/formulario-demo', function () {
     return view('practica.formulario_demo');
 });
+
 Route::post('/practica/enviar', function () {
     return 'Formulario recibido correctamente.';
 })->middleware(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class);
+
 Route::get('/comercios/{comercio}/transacciones/nueva', [
     TransaccionController::class,
     'create'
 ])->name('transacciones.create');
+
 Route::post('/transacciones', [
     TransaccionController::class,
     'store'
 ])->name('transacciones.store');
+
 Route::get('/transacciones', [
     TransaccionController::class,
     'index'
