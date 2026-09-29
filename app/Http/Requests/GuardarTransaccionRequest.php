@@ -29,6 +29,9 @@ class GuardarTransaccionRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensajes personalizados de validación.
+     */
     public function messages(): array
     {
         return [
@@ -39,6 +42,9 @@ class GuardarTransaccionRequest extends FormRequest
         ];
     }
 
+    /**
+     * Nombres amigables de los campos.
+     */
     public function attributes(): array
     {
         return [
