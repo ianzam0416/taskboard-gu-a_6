@@ -24,7 +24,7 @@ class GuardarTransaccionRequest extends FormRequest
     {
         return [
             'comercio_id' => 'required|exists:comercios,id',
-            'cliente_nombre' => 'required|string|max:255',
+            'cliente_nombre' => 'required|string|min:3|max:255',
             'monto' => 'required|numeric|min:0.01',
         ];
     }
@@ -36,6 +36,7 @@ class GuardarTransaccionRequest extends FormRequest
     {
         return [
             'cliente_nombre.required' => 'Debes indicar el nombre del cliente.',
+            'cliente_nombre.min' => 'El nombre del cliente es demasiado corto.',
             'monto.required' => 'Debes indicar un monto.',
             'monto.numeric' => 'El monto debe ser un número.',
             'monto.min' => 'El monto debe ser mayor a cero.',
