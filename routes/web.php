@@ -51,3 +51,20 @@ Route::get('/transaccion/{transaccion}', [
     TransaccionController::class,
     'show'
 ])->name('transacciones.show');
+
+// Semana 11: editar, actualizar y eliminar transacciones
+
+Route::get('/transacciones/{transaccion}/editar', [
+    TransaccionController::class,
+    'edit'
+])->name('transacciones.edit');
+
+Route::put('/transacciones/{transaccion}', [
+    TransaccionController::class,
+    'update'
+])->name('transacciones.update');
+
+Route::delete('/transacciones/{transaccion}', [
+    TransaccionController::class,
+    'destroy'
+])->name('transacciones.destroy');

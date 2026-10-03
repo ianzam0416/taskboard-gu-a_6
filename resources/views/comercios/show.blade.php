@@ -36,15 +36,31 @@
         {{ $comercio->transacciones->count() }} transacciones.
     </p>
 @endif
-
 @forelse ($comercio->transacciones as $transaccion)
     <div class="card">
         <strong>${{ number_format($transaccion->monto, 2) }}</strong>
         — {{ $transaccion->cliente_nombre }}
 
         <x-badge-estado :estado="$transaccion->estado" />
+
+        <p>
+            <a href="{{ route('transacciones.edit', $transaccion) }}">
+                Editar
+            </a>
+
+            <form
+                action="{{ route('transacciones.destroy', $transaccion) }}"
+                method="POST"
+                style="display: inline;"
+                onsubmit="return confirm('¿Eliminar esta transacción? Esta acción no se puede deshacer.')"
+            >
+                @csrf
+                @method('DELETE')
+
+                <button type="submit">Eliminar</button>
+            </form>
+        </p>
     </div>
 @empty
     <p>Sin transacciones</p>
-@endforelse 
-@endsection
+@endforelse
