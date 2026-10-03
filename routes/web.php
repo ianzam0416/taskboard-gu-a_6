@@ -68,3 +68,8 @@ Route::delete('/transacciones/{transaccion}', [
     TransaccionController::class,
     'destroy'
 ])->name('transacciones.destroy');
+// Semana 11 viernes: mover estado de una transacción
+Route::patch('/transacciones/{transaccion}/mover/{estado}', [
+    TransaccionController::class,
+    'moverEstado'
+])->name('transacciones.mover');

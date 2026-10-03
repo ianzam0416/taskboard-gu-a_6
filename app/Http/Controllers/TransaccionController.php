@@ -68,4 +68,31 @@ public function destroy(Transaccion $transaccion)
         ->route('comercios.show', $comercioId)
         ->with('mensaje', 'Transacción eliminada.');
 }
+public function moverEstado(Transaccion $transaccion, string $estado)
+{
+    $transiciones = [
+        'Iniciada'   => ['Completada', 'Fallida'],
+        'Completada' => [],
+        'Fallida'    => ['Iniciada'],
+    ];
+
+    if (!in_array($estado, ['Iniciada', 'Completada', 'Fallida'])) {
+        abort(400, 'Estado no válido.');
+    }
+
+    if (!in_array($estado, $transiciones[$transaccion->estado] ?? [])) {
+        abort(
+            400,
+            "No se puede mover de {$transaccion->estado} a {$estado}."
+        );
+    }
+
+    $transaccion->update([
+        'estado' => $estado
+    ]);
+
+    return redirect()
+        ->route('comercios.show', $transaccion->comercio_id)
+        ->with('mensaje', "Transacción movida a {$estado}.");
+}
 }
