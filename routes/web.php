@@ -1,18 +1,44 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ComercioController;
 use App\Http\Controllers\TransaccionController;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
-| Web Routes — TaskBoard (Pasarela de Pagos)
+| Autenticación de usuarios
 |--------------------------------------------------------------------------
-| Semana 5 · Routing y Controladores
-|
-| Cada ruta conecta una URL + verbo HTTP con una acción del controlador.
-| El controlador coordina; nunca contiene HTML ni SQL crudo.
 */
+
+Route::middleware('guest')->group(function () {
+    Route::get('/registro', [
+        AuthController::class,
+        'mostrarRegistro'
+    ])->name('registro');
+
+    Route::post('/registro', [
+        AuthController::class,
+        'registrar'
+    ])->name('registro.store');
+
+    Route::get('/login', [
+        AuthController::class,
+        'mostrarLogin'
+    ])->name('login');
+
+    Route::post('/login', [
+        AuthController::class,
+        'login'
+    ])->name('login.attempt');
+});
+
+Route::post('/logout', [
+    AuthController::class,
+    'logout'
+])->middleware('auth')->name('logout');
+
 
 Route::get('/', function () {
     return redirect()->route('comercios.index');
