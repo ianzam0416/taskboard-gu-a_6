@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('transacciones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('comercio_id')
-                ->constrained('comercios')
-                ->cascadeOnDelete();
+                   $table->foreignId('comercio_id')
+       ->constrained('comercios')
+       ->cascadeOnDelete();
             $table->decimal('monto', 8, 2);
             $table->string('cliente_nombre');
             $table->enum('estado', ['Iniciada', 'Completada', 'Fallida'])

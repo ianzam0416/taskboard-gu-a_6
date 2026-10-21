@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('eventos_transaccion', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaccion_id')
-                ->constrained('transacciones')
-                ->cascadeOnDelete();
-            $table->string('tipo_evento');
+               $table->foreignId('transaccion_id')
+       ->constrained('transacciones')
+       ->onDelete('cascade');
+                        $table->string('tipo_evento');
             $table->text('detalle')->nullable();
             $table->timestamps();
         });

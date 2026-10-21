@@ -58,15 +58,22 @@ public function update(
         ->route('comercios.show', $transaccion->comercio_id)
         ->with('mensaje', 'Transacción actualizada correctamente.');
 }
-public function destroy(Transaccion $transaccion)
-{
-    $comercioId = $transaccion->comercio_id;
+   public function destroy(Transaccion $transaccion)
+   {
+       if ($transaccion->estado === 'Completada') {
+           return redirect()
+               ->route('comercios.show', $transaccion->comercio_id)
+               ->with('error', 'No se puede eliminar una transacción completada.');
+       }
 
-    $transaccion->delete();
+       $comercioId = $transaccion->comercio_id;
 
-    return redirect()
-        ->route('comercios.show', $comercioId)
-        ->with('mensaje', 'Transacción eliminada.');
+       $transaccion->delete();
+
+       return redirect()
+           ->route('comercios.show', $comercioId)
+           ->with('mensaje', 'Transacción eliminada.');
+   
 }
 public function moverEstado(Transaccion $transaccion, string $estado)
 {

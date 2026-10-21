@@ -6,6 +6,12 @@
 @section('titulo', $comercio->nombre_comercio)
 
 @section('contenido')
+     @if (session('error'))
+         <div class="alerta-error">{{ session('error') }}</div>
+     @endif
+
+       <p>
+           <a href="{{ route('comercios.index') }}"></a>
     <p>
         <a href="{{ route('comercios.index') }}">
             &larr; Volver a comercios
@@ -44,7 +50,7 @@
 
             <x-badge-estado :estado="$transaccion->estado" />
 
-            <p>
+            <div>
                 <a href="{{ route('transacciones.edit', $transaccion) }}">
                     Editar
                 </a>
@@ -90,7 +96,7 @@
                     </form>
 
                 @endif
-            </p>
+                </div>
         </div>
     @empty
         <p>Sin transacciones</p>
