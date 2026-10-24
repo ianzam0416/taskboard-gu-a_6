@@ -3,53 +3,44 @@
 namespace Database\Seeders;
 
 use App\Models\Comercio;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ComercioSeeder extends Seeder
 {
-    /**
-     * Datos de ejemplo usados en todas las guías de Semana 6-8:
-     * - Café Amanecer: comercio CON transacciones (uno Completada, uno Iniciada).
-     * - Ferretería El Tornillo: comercio SIN transacciones (para probar @empty).
-     */
     public function run(): void
     {
-        $cafeAmanecer = Comercio::create([
-            'nombre_comercio' => 'Café Amanecer',
-            'rubro' => 'Restaurante',
-            'telefono' => '2222-1234',
-        ]);
+        $ana = User::where('email', 'ana@example.com')->firstOrFail();
+        $carlos = User::where('email', 'carlos@example.com')->firstOrFail();
 
-        $cafeAmanecer->transacciones()->createMany([
+        $cafeAmanecer = Comercio::firstOrCreate(
+            ['nombre_comercio' => 'Café Amanecer'],
             [
-                'monto' => 45.00,
-                'cliente_nombre' => 'María López',
-                'estado' => 'Completada',
-            ],
+                'rubro' => 'Restaurante',
+                'telefono' => '2222-1234',
+            ]
+        );
+
+        $cafeAmanecer->update(['user_id' => $ana->id]);
+
+        $ferreteria = Comercio::firstOrCreate(
+            ['nombre_comercio' => 'Ferretería El Tornillo'],
             [
-                'monto' => 12.50,
-                'cliente_nombre' => 'Juan Pérez',
-                'estado' => 'Iniciada',
-            ],
-        ]);
+                'rubro' => 'Ferretería',
+                'telefono' => '2222-5678',
+            ]
+        );
 
-        Comercio::create([
-            'nombre_comercio' => 'Ferretería El Tornillo',
-            'rubro' => 'Ferretería',
-            'telefono' => '2222-5678',
-        ]);
+        $ferreteria->update(['user_id' => $carlos->id]);
 
-        // Comercio adicional para tener más variedad al probar la interfaz.
-        $pupuseria = Comercio::create([
-            'nombre_comercio' => 'Pupusería Doña Marta',
-            'rubro' => 'Restaurante',
-            'telefono' => '2222-9012',
-        ]);
+        $pupuseria = Comercio::firstOrCreate(
+            ['nombre_comercio' => 'Pupusería Doña Marta'],
+            [
+                'rubro' => 'Restaurante',
+                'telefono' => '2222-9012',
+            ]
+        );
 
-        $pupuseria->transacciones()->create([
-            'monto' => 8.00,
-            'cliente_nombre' => 'Carlos Ramírez',
-            'estado' => 'Fallida',
-        ]);
+        $pupuseria->update(['user_id' => $carlos->id]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class GuardarTransaccionRequest extends FormRequest
 {
@@ -23,9 +24,11 @@ class GuardarTransaccionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'comercio_id' => 'required|exists:comercios,id',
-            'cliente_nombre' => 'required|string|min:3|max:255',
-            'monto' => 'required|numeric|min:0.01',
+            'comercio_id' => [
+    'required',
+    Rule::exists('comercios', 'id')
+        ->where('user_id', $this->user()->id),
+],
         ];
     }
 

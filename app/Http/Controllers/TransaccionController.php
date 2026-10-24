@@ -7,43 +7,59 @@ use App\Models\Comercio;
 use App\Models\Transaccion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class TransaccionController extends Controller
 {
+    
     public function index(): JsonResponse
-    {
-        $transacciones = Transaccion::with('comercio')->get();
+{
+    $transacciones = Transaccion::whereHas('comercio', function ($query) {
+        $query->where('user_id', Auth::id());
+    })->with('comercio')->get();
 
-        return response()->json($transacciones);
-    }
+    return response()->json($transacciones);
+}
 
     public function show(Transaccion $transaccion): JsonResponse
-    {
-        $transaccion->load('comercio');
+{
+    $this->autorizarPropietario($transaccion);
 
-        return response()->json($transaccion);
-    }
+    $transaccion->load('comercio');
 
-    public function create(Comercio $comercio): View
-    {
-        return view('transacciones.create', compact('comercio'));
-    }
+    return response()->json($transaccion);
+}
+
+   public function create(Comercio $comercio): View
+{
+    abort_unless(
+        (int) $comercio->user_id === (int) Auth::id(),
+        404
+    );
+
+    return view('transacciones.create', compact('comercio'));
+}
 
     public function store(GuardarTransaccionRequest $request)
-    {
-        $transaccion = Transaccion::create($request->only([
-            'comercio_id',
-            'cliente_nombre',
-            'monto',
-        ]));
-
-        return redirect()
-            ->route('comercios.show', $transaccion->comercio_id)
-            ->with('mensaje', 'Transacción registrada con éxito.');
-    }
-    public function edit(Transaccion $transaccion)
 {
-    $comercios = Comercio::orderBy('nombre_comercio')->get();
+    $transaccion = Transaccion::create($request->only([
+        'comercio_id',
+        'cliente_nombre',
+        'monto',
+    ]));
+
+    return redirect()
+        ->route('comercios.show', $transaccion->comercio_id)
+        ->with('mensaje', 'Transacción registrada con éxito.');
+}
+   public function edit(Transaccion $transaccion)
+{
+    $this->autorizarPropietario($transaccion);
+
+    $comercios = Auth::user()
+        ->comercios()
+        ->orderBy('nombre_comercio')
+        ->get();
 
     return view('transacciones.edit', compact('transaccion', 'comercios'));
 }
@@ -52,6 +68,8 @@ public function update(
     GuardarTransaccionRequest $request,
     Transaccion $transaccion
 ) {
+    $this->autorizarPropietario($transaccion);
+
     $transaccion->update($request->validated());
 
     return redirect()
@@ -60,6 +78,8 @@ public function update(
 }
    public function destroy(Transaccion $transaccion)
    {
+    $this->autorizarPropietario($transaccion);
+
        if ($transaccion->estado === 'Completada') {
            return redirect()
                ->route('comercios.show', $transaccion->comercio_id)
@@ -77,6 +97,8 @@ public function update(
 }
 public function moverEstado(Transaccion $transaccion, string $estado)
 {
+    $this->autorizarPropietario($transaccion);
+    
     $transiciones = [
         'Iniciada'   => ['Completada', 'Fallida'],
         'Completada' => [],
@@ -101,5 +123,12 @@ public function moverEstado(Transaccion $transaccion, string $estado)
     return redirect()
         ->route('comercios.show', $transaccion->comercio_id)
         ->with('mensaje', "Transacción movida a {$estado}.");
+}
+private function autorizarPropietario(Transaccion $transaccion): void
+{
+    abort_unless(
+        (int) $transaccion->comercio->user_id === (int) Auth::id(),
+        404
+    );
 }
 }
