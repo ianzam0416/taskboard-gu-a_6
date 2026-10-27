@@ -1,0 +1,61 @@
+@host = http://127.0.0.1:8000/api
+@token = PEGA_AQUI_TU_TOKEN
+### 1. Listar los comercios de Ana
+GET {{host}}/comercios
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 2. Consultar el comercio 1
+GET {{host}}/comercios/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 3. Consultar el usuario autenticado
+GET {{host}}/user
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 4. Listar transacciones
+GET {{host}}/transacciones
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 5. Filtrar transacciones completadas
+GET {{host}}/transacciones?estado=Completada
+Accept: application/json
+Authorization: Bearer {{token}}
+### 6. Consultar la transacción 2
+GET {{host}}/transacciones/2
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### 7. Crear una transacción de prueba
+POST {{host}}/transacciones
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "comercio_id": 1,
+    "monto": 12.50,
+    "cliente_nombre": "Cliente API Prueba",
+    "estado": "Iniciada"
+}
+
+### 8. Probar validación de datos inválidos
+POST {{host}}/transacciones
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "comercio_id": 1,
+    "monto": -5,
+    "cliente_nombre": "Prueba de validación",
+    "estado": "Iniciada"
+}
+
+### 9. Eliminar la transacción de prueba
+DELETE {{host}}/transacciones/7
+Accept: application/json
+Authorization: Bearer {{token}}
