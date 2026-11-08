@@ -40,13 +40,23 @@ class TransaccionApiController extends Controller
                 Rule::exists('comercios', 'id')
                     ->where('user_id', $request->user()->id),
             ],
-            'monto' => ['required', 'numeric', 'min:0.01'],
-            'cliente_nombre' => ['required', 'string', 'min:2', 'max:255'],
+            'monto' => [
+                'required',
+                'numeric',
+                'min:0.01',
+                'max:999999.99',
+            ],
+            'cliente_nombre' => [
+                'required',
+                'string',
+                'min:2',
+                'max:255',
+            ],
             'estado' => [
                 'required',
                 'string',
                 Rule::in(['Iniciada', 'Completada', 'Fallida']),
-],
+            ],
         ])->validate();
 
         $transaccion = Transaccion::create($datos);
@@ -67,6 +77,7 @@ class TransaccionApiController extends Controller
 
         return new TransaccionResource($transaccion);
     }
+
     /**
      * Actualizar una transacción del usuario autenticado.
      */
@@ -84,8 +95,20 @@ class TransaccionApiController extends Controller
                 Rule::exists('comercios', 'id')
                     ->where('user_id', $request->user()->id),
             ],
-            'monto' => ['sometimes', 'required', 'numeric', 'min:0.01'],
-            'cliente_nombre' => ['sometimes', 'required', 'string', 'min:2', 'max:255'],
+            'monto' => [
+                'sometimes',
+                'required',
+                'numeric',
+                'min:0.01',
+                'max:999999.99',
+            ],
+            'cliente_nombre' => [
+                'sometimes',
+                'required',
+                'string',
+                'min:2',
+                'max:255',
+            ],
             'estado' => [
                 'sometimes',
                 'required',
