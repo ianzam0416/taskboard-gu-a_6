@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransaccionResource;
-use App\Models\Comercio;
 use App\Models\Transaccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -44,9 +43,9 @@ class TransaccionApiController extends Controller
             'monto' => ['required', 'numeric', 'min:0.01'],
             'cliente_nombre' => ['required', 'string', 'min:2', 'max:255'],
             'estado' => [
-    'required',
-    'string',
-    Rule::in(['Iniciada', 'Completada', 'Fallida']),
+                'required',
+                'string',
+                Rule::in(['Iniciada', 'Completada', 'Fallida']),
 ],
         ])->validate();
 
@@ -65,6 +64,37 @@ class TransaccionApiController extends Controller
         $transaccion = Transaccion::whereHas('comercio', function ($query) use ($request) {
             $query->where('user_id', $request->user()->id);
         })->findOrFail($id);
+
+        return new TransaccionResource($transaccion);
+    }
+    /**
+     * Actualizar una transacción del usuario autenticado.
+     */
+    public function update(Request $request, string $id)
+    {
+        $transaccion = Transaccion::whereHas('comercio', function ($query) use ($request) {
+            $query->where('user_id', $request->user()->id);
+        })->findOrFail($id);
+
+        $datos = Validator::make($request->all(), [
+            'comercio_id' => [
+                'sometimes',
+                'required',
+                'integer',
+                Rule::exists('comercios', 'id')
+                    ->where('user_id', $request->user()->id),
+            ],
+            'monto' => ['sometimes', 'required', 'numeric', 'min:0.01'],
+            'cliente_nombre' => ['sometimes', 'required', 'string', 'min:2', 'max:255'],
+            'estado' => [
+                'sometimes',
+                'required',
+                'string',
+                Rule::in(['Iniciada', 'Completada', 'Fallida']),
+            ],
+        ])->validate();
+
+        $transaccion->update($datos);
 
         return new TransaccionResource($transaccion);
     }
