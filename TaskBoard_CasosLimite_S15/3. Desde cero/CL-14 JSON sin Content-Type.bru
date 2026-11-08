@@ -1,0 +1,26 @@
+meta {
+  name: CL-14 JSON sin Content-Type.
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{host}}/transacciones
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "comercio_id": 1,
+    "cliente_nombre": "Luis Mena",
+    "monto": 25.50,
+    "estado": "Iniciada"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

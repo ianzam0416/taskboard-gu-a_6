@@ -1,0 +1,31 @@
+meta {
+  name: CL-06 Comercio ID con texto
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/transacciones?Accept=application/json&Content-Type=application/json
+  body: json
+  auth: inherit
+}
+
+params:query {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "comercio_id": "abc",
+    "cliente_nombre": "Luis Mena",
+    "monto": 25.50,
+    "estado": "Iniciada"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

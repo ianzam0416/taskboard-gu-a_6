@@ -1,0 +1,21 @@
+meta {
+  name: CL-15 Eliminar dos veces
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{host}}/transacciones/13
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/json
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+  forwardAuthorizationHeader: false
+}

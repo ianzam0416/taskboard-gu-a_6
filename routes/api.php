@@ -5,7 +5,35 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Comercio;
 use App\Http\Resources\ComercioResource;
 use App\Http\Controllers\Api\TransaccionApiController;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
+// Iniciar sesión desde clientes API y generar token de Sanctum
+Route::post('/login', function (Request $request) {
+
+    $datos = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'string'],
+        'dispositivo' => ['nullable', 'string'],
+    ]);
+
+    $user = User::where('email', $datos['email'])->first();
+
+    if (!$user || !Hash::check($datos['password'], $user->password)) {
+        return response()->json([
+            'message' => 'Credenciales incorrectas.',
+        ], 401);
+    }
+
+    $token = $user->createToken(
+        $datos['dispositivo'] ?? 'bruno'
+    )->plainTextToken;
+
+    return response()->json([
+        'token' => $token,
+        'user' => $user,
+    ], 201);
+});
 // Consultar el usuario autenticado
 Route::get('/user', function (Request $request) {
     return $request->user();
