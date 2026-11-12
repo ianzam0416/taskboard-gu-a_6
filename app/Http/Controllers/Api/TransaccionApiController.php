@@ -16,17 +16,25 @@ class TransaccionApiController extends Controller
      * Permite filtrar por estado usando ?estado=Completada.
      */
     public function index(Request $request)
-    {
-        $consulta = Transaccion::whereHas('comercio', function ($query) use ($request) {
-            $query->where('user_id', $request->user()->id);
-        });
+{
+    $datos = $request->validate([
+        'estado' => [
+            'nullable',
+            'string',
+            Rule::in(['Iniciada', 'Completada', 'Fallida']),
+        ],
+    ]);
 
-        if ($request->filled('estado')) {
-            $consulta->where('estado', $request->query('estado'));
-        }
+    $consulta = Transaccion::whereHas('comercio', function ($query) use ($request) {
+        $query->where('user_id', $request->user()->id);
+    });
 
-        return TransaccionResource::collection($consulta->get());
+    if (!empty($datos['estado'])) {
+        $consulta->where('estado', $datos['estado']);
     }
+
+    return TransaccionResource::collection($consulta->get());
+}
 
     /**
      * Filtrar transacciones por estado y rango de fechas.
@@ -49,6 +57,24 @@ class TransaccionApiController extends Controller
                 'date',
                 'after_or_equal:desde',
             ],
+            'monto_min' => [
+    'nullable',
+    'numeric',
+    'min:0',
+],
+'monto_max' => [
+    'nullable',
+    'numeric',
+    'min:0',
+    function ($attribute, $value, $fail) use ($request) {
+        if (
+            $request->filled('monto_min') &&
+            $value < $request->input('monto_min')
+        ) {
+            $fail('El monto máximo debe ser mayor o igual al monto mínimo.');
+        }
+    },
+],
         ]);
 
         $consulta = Transaccion::whereHas('comercio', function ($query) use ($request) {
@@ -66,6 +92,13 @@ class TransaccionApiController extends Controller
         if (!empty($datos['hasta'])) {
             $consulta->whereDate('created_at', '<=', $datos['hasta']);
         }
+        if (isset($datos['monto_min'])) {
+    $consulta->where('monto', '>=', $datos['monto_min']);
+}
+
+if (isset($datos['monto_max'])) {
+    $consulta->where('monto', '<=', $datos['monto_max']);
+}
 
         return TransaccionResource::collection($consulta->get());
     }
