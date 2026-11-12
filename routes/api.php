@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // API REST de transacciones
     Route::get('/transacciones', [TransaccionApiController::class, 'index']);
+    Route::get('/transacciones/filtrar', [TransaccionApiController::class, 'filtrar']);
     Route::post('/transacciones', [TransaccionApiController::class, 'store']);
     Route::get('/transacciones/{id}', [TransaccionApiController::class, 'show']);
     Route::put('/transacciones/{id}', [TransaccionApiController::class, 'update']);

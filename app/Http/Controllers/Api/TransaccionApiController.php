@@ -29,6 +29,48 @@ class TransaccionApiController extends Controller
     }
 
     /**
+     * Filtrar transacciones por estado y rango de fechas.
+     * Solo muestra transacciones de los comercios del usuario autenticado.
+     */
+    public function filtrar(Request $request)
+    {
+        $datos = $request->validate([
+            'estado' => [
+                'nullable',
+                'string',
+                Rule::in(['Iniciada', 'Completada', 'Fallida']),
+            ],
+            'desde' => [
+                'nullable',
+                'date',
+            ],
+            'hasta' => [
+                'nullable',
+                'date',
+                'after_or_equal:desde',
+            ],
+        ]);
+
+        $consulta = Transaccion::whereHas('comercio', function ($query) use ($request) {
+            $query->where('user_id', $request->user()->id);
+        });
+
+        if (!empty($datos['estado'])) {
+            $consulta->where('estado', $datos['estado']);
+        }
+
+        if (!empty($datos['desde'])) {
+            $consulta->whereDate('created_at', '>=', $datos['desde']);
+        }
+
+        if (!empty($datos['hasta'])) {
+            $consulta->whereDate('created_at', '<=', $datos['hasta']);
+        }
+
+        return TransaccionResource::collection($consulta->get());
+    }
+
+    /**
      * Registrar una transacción.
      */
     public function store(Request $request)
