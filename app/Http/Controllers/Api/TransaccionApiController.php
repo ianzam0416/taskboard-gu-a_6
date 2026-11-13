@@ -66,14 +66,7 @@ class TransaccionApiController extends Controller
     'nullable',
     'numeric',
     'min:0',
-    function ($attribute, $value, $fail) use ($request) {
-        if (
-            $request->filled('monto_min') &&
-            $value < $request->input('monto_min')
-        ) {
-            $fail('El monto máximo debe ser mayor o igual al monto mínimo.');
-        }
-    },
+    Rule::when($request->filled('monto_min'), ['gte:monto_min']),
 ],
         ]);
 
